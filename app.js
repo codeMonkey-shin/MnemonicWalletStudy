@@ -1,15 +1,13 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const cors = require('cors');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const walletRouter = require('./routes/wallet/index');
+const walletRouter = require('./routes/wallet');
 
-var app = express();
+const app = express();
 const port = 3001;
 
 // view engine setup
@@ -29,8 +27,9 @@ app.use(
   })
 );
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.get('/', function(req, res, next) {
+  res.status(200).send({"message": "Mnemonic server is running..."});
+});
 app.use('/wallet', walletRouter);
 
 // catch 404 and forward to error handler
@@ -50,8 +49,13 @@ app.use(function(err, req, res, next) {
 });
 
 app.set('port', port);
-app.listen(app.get('port'), () => {
-  console.log(`app is listening in http://localhost:${app.get('port')}`);
+app.listen(port, () => {
+  console.log(`
+  ################################################
+  🛡️  Server listening on port: ${port} 🛡️
+  http://localhost:${port}
+  ################################################
+  `);
 });
 
 module.exports = app;
